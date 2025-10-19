@@ -87,3 +87,9 @@ desktop.ini
 *.temp
 tmp/
 temp/
+
+# Docker
+.docker/
+docker-compose.override.yml
+*.tar.gz
+hexdetector-backup-*.tar.gz
