@@ -13,17 +13,22 @@ HexDetector is an advanced machine learning framework for detecting and classify
 - **Rich Visualizations**: Confusion matrices, ROC curves, feature importance plots
 - **Flexible Experiments**: Run demos, designed experiments, or custom configurations
 - **Model Persistence**: Save and reload trained models for production use
+- **🐳 Docker Support**: Fully containerized with Docker and Docker Compose
+- **Easy Deployment**: One-command setup with Makefile automation
 
 ## 📋 Table of Contents
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+  - [Local Installation](#local-installation)
+  - [🐳 Docker Installation (Recommended)](#-docker-installation-recommended)
 - [Dataset Setup](#dataset-setup)
 - [Project Structure](#project-structure)
 - [Usage](#usage)
   - [Quick Demo](#quick-demo)
   - [Full Experiments](#full-experiments)
   - [Custom Experiments](#custom-experiments)
+- [Docker Usage](#-docker-usage)
 - [Results](#results)
 - [Contributing](#contributing)
 - [License](#license)
@@ -52,31 +57,84 @@ HexDetector is an advanced machine learning framework for detecting and classify
 
 ## 🚀 Installation
 
-### Step 1: Clone the Repository
+### Local Installation
+
+#### Step 1: Clone the Repository
 
 ```bash
 git clone https://github.com/hexnin3x/HexDetector.git
 cd HexDetector
 ```
 
-### Step 2: Create Virtual Environment (Recommended)
+#### Step 2: Create Virtual Environment (Recommended)
 
 ```bash
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 ```
 
-### Step 3: Install Dependencies
+#### Step 3: Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### Step 4: Verify Installation
+#### Step 4: Verify Installation
 
 ```bash
 python src/utils/check_config.py
 ```
+
+### 🐳 Docker Installation (Recommended)
+
+**Easiest way to get started!** No need to install Python or dependencies.
+
+#### Prerequisites
+- Docker Desktop installed ([Download](https://www.docker.com/products/docker-desktop))
+- 8GB+ RAM available
+- 10GB+ disk space
+
+#### Quick Start
+
+```bash
+# Clone repository
+git clone https://github.com/hexnin3x/HexDetector.git
+cd HexDetector
+
+# Build Docker image
+make build
+
+# Run demo
+make run-demo
+```
+
+#### Using Docker Compose
+
+```bash
+# Build and start services
+docker-compose up -d
+
+# Run demo mode
+docker-compose run --rm hexdetector python src/main.py --mode demo --model xgboost
+
+# Stop services
+docker-compose down
+```
+
+#### Available Make Commands
+
+```bash
+make build          # Build Docker images
+make run-demo       # Run quick demo
+make run-full       # Run full analysis
+make jupyter        # Start Jupyter Lab (http://localhost:8888)
+make shell          # Open bash shell in container
+make test           # Run tests
+make logs           # View logs
+make clean          # Clean up containers
+```
+
+📚 **See [DOCKER_GUIDE.md](DOCKER_GUIDE.md) for complete Docker documentation**
 
 ## 📦 Dataset Setup
 
@@ -198,7 +256,53 @@ python src/main.py --output ./my_experiments
 python src/main.py --attacks DDoS PortScan Botnet
 ```
 
-## 📊 Results
+## � Docker Usage
+
+### Quick Docker Commands
+
+```bash
+# Run demo (fastest way to test)
+make run-demo
+
+# Run with specific model
+make run-xgb          # XGBoost
+make run-rf           # Random Forest
+make run-svm          # SVM
+
+# Run with custom parameters
+make run-custom SAMPLES=50000 MODEL=xgboost
+
+# Start Jupyter for interactive analysis
+make jupyter
+# Access at http://localhost:8888
+
+# Open shell in container
+make shell
+
+# Run tests
+make test
+
+# View real-time logs
+make logs
+```
+
+### Docker Compose Examples
+
+```bash
+# Run full analysis
+docker-compose run --rm hexdetector \
+  python src/main.py --mode full --model random_forest
+
+# Run custom analysis with mounted data
+docker-compose run --rm \
+  -v /path/to/iot23:/app/data/raw \
+  hexdetector \
+  python src/main.py --mode custom --samples 100000
+```
+
+📚 **Complete Docker documentation**: [DOCKER_GUIDE.md](DOCKER_GUIDE.md)
+
+## �📊 Results
 
 HexDetector achieves high accuracy in detecting various network anomalies:
 

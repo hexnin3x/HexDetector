@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  hexdetector:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hexdetector:latest
+    container_name: hexdetector
+    
+    # Mount volumes for data persistence
+    volumes:
+      # Mount your local data directory
+      - ./data:/app/data
+      # Mount output directory
+      - ./output:/app/output
+      # Mount logs directory
+      - ./logs:/app/logs
+      # Mount models directory
+      - ./models:/app/models
+    
+    # Environment variables
+    environment:
+      - PYTHONUNBUFFERED=1
+      - IOT23_DATA_DIR=/app/data/raw
+      - IOT23_PROCESSED_DIR=/app/data/processed
+      - LOG_LEVEL=INFO
+    
+    # Resource limits (adjust based on your system)
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+    
+    # Network mode
+    network_mode: bridge
+    
+    # Command - override this when running
+    # Example: docker-compose run hexdetector python src/main.py --mode demo
+    command: ["python", "src/main.py", "--help"]
+    
+    # Restart policy
+    restart: unless-stopped
+
+  # Optional: Jupyter notebook service for exploration
+  hexdetector-notebook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hexdetector:latest
+    container_name: hexdetector-notebook
+    
+    volumes:
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./src:/app/src
+    
+    ports:
+      - "8888:8888"
+    
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    
+    command: >
+      bash -c "pip install jupyter jupyterlab &&
+               jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+               --NotebookApp.token='' --NotebookApp.password=''"
+    
+    restart: unless-stopped
+
+networks:
+  default:
+    driver: bridge
